@@ -5,17 +5,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
-    crossorigin="anonymous">
+  <script src="https://kit.fontawesome.com/cac0b0e6ee.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.css" integrity="sha512-Woz+DqWYJ51bpVk5Fv0yES/edIMXjj3Ynda+KWTIkGoynAMHrqTcDUQltbipuiaD5ymEo9520lyoVOo9jCQOCA==" crossorigin="anonymous" />
 
   <link rel="stylesheet" href="css/bootstrap.css">
   <link rel="stylesheet" href="css/style.css">
-  <title>Bootstrap Theme</title>
+  <title>LEMC</title>
 </head>
 
 <body class="bg-dark">
-  <div class="container shadow">
+  <div class="container-fluid shadow">
     <header id="main-header">
       <div class="row g-0">
         <div class="col-lg-4 col-md-5">
@@ -25,8 +24,8 @@
           <div class="d-flex flex-column h-100">
             <div class="p-5 bg-dark text-white">
               <div class="d-flex flex-row justify-content-between align-items-center">
-                <h1 class="display-4">Luis Mendez</h1>
-                <div class="d-none d-md-block">
+                
+                <div >
                   <a href="https://twitter.com/MendezCantero" class="text-white" target="_blank">
                     <i class="fab fa-twitter"></i>
                   </a>
@@ -50,7 +49,7 @@
             </div>
 
             <div class="p-4 bg-black">
-              <p class="h3">ICT Engineer</p> 
+              <h1 class="display-4">Luis Mendez</h1>
             </div>
 
             <div class="h-100 ">
@@ -63,11 +62,11 @@
                   <i class="fas fa-graduation-cap fa-2x d-block"></i>
                   <span class="d-none d-sm-block">Resume</span>
                 </div>
-                <div class="d-flex flex-column justify-content-center port-item p-4 bg-warning" data-toggle="collapse" data-target="#work">
-                  <i class="fas fa-folder-open fa-2x d-block"></i>
-                  <span class="d-none d-sm-block">Skills</span>
+                <div class="d-flex flex-column justify-content-center port-item p-4 bg-info" data-toggle="collapse" data-target="#game">
+                  <i class="fa-solid fa-gamepad fa-2x d-block"></i>
+                  <span class="d-none d-sm-block">Games</span>
                 </div>
-                <div class="d-flex flex-column justify-content-center port-item p-4 bg-secondary" data-toggle="collapse" data-target="#music">
+                <div class="d-flex flex-column justify-content-center port-item p-4 bg-warning" data-toggle="collapse" data-target="#music">
                   <i class="fas fa-compact-disc fa-2x d-block"></i>
                   <span class="d-none d-sm-block">Music</span>
                 </div>
@@ -89,16 +88,21 @@
       <div class="card card-body bg-primary text-white py-5">
         <h2>Welcome to my page!</h2>
         <p class="lead">Here you'll find more information about me</p>
-        <div class="container">
-          <div class="row">
-            <div class="col-sm">
-              <h4><a href="#projects" class="link-light">Projects</a></h4>
-            </div>
-            <div class="col-sm">
-              <h4><a href="#languages" class="link-light">Languages</a></h4>
-            </div>
-          </div>
-        </div>
+        
+      </div>
+
+      
+
+      
+
+
+    </div>
+
+    <!-- RESUME -->
+    <div id="resume" class="collapse">
+      <div class="card card-body bg-success text-white py-5">
+        <h2>My Resume</h2>
+        <p class="lead">Where did I study and where have I worked? All that is answered in this section.</p>
       </div>
 
       <div class="card card-body py-5">
@@ -108,7 +112,7 @@
 
         <!-- Projects I've worked on -->
 
-        <div class="container">
+        <div>
           <div class="row">
             <!-- 01-10-2021 BARMER App - Android Developer -->
             <div class="card" style="width: 18rem; border-color: rgb(132, 189, 0);">
@@ -131,83 +135,7 @@
         
       </div>
 
-      <div class="card card-body py-5">
-        <h3 id="languages">Languages</h3>
-        
-        <hr>
-        
-        <div class="row row-cols-1 row-cols-md-2 g-4">
-
-          <div class="col">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title"><img src="img/spain.png" alt=""> Spanish</h5>
-                <b class="card-text">Native</b>
-              </div>
-              <div class="card-footer">
-                <div class="progress mb-3">
-                  <div class="progress-bar bg-success" style="width:100%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title"><img src="img/germany.png" alt=""> German</h5>
-                <b class="card-text">C1</b>
-              </div>
-              <div class="card-footer">
-                <div class="progress mb-3">
-                  <div class="progress-bar bg-success" style="width:90%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title"><img src="img/britain.png" alt=""> English</h5>
-                <b class="card-text">C1</b>
-              </div>
-              <div class="card-footer">
-                <div class="progress mb-3">
-                  <div class="progress-bar bg-success" style="width:90%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title"><img src="img/china.png" alt=""> Chinese</h5>
-                <b class="card-text">HSK2</b>
-              </div>
-              <div class="card-footer">
-                <div class="progress mb-3">
-                  <div class="progress-bar bg-danger" style="width:30%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-        </div>
-        
-      </div>
-
-
-    </div>
-
-    <!-- RESUME -->
-    <div id="resume" class="collapse">
-      <div class="card card-body bg-success text-white py-5">
-        <h2>My Resume</h2>
-        <p class="lead">Where did I study and where have I worked? All that is answered in this section.</p>
-      </div>
-
+      <!-- Companies-->
       <div class="card card-body py-5">
         <h3>Where have I worked?</h3>
         <p>Here you can find the information about the job experience I have.</p>
@@ -319,6 +247,73 @@
   </div>
 </div>
 
+<!-- Languages-->
+<div class="card card-body py-5">
+  <h3 id="languages">Languages</h3>
+  
+  <hr>
+  
+  <div class="row row-cols-1 row-cols-md-2 g-4">
+
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"><img src="img/spain.png" alt=""> Spanish</h5>
+          <b class="card-text">Native</b>
+        </div>
+        <div class="card-footer">
+          <div class="progress mb-3">
+            <div class="progress-bar bg-success" style="width:100%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"><img src="img/germany.png" alt=""> German</h5>
+          <b class="card-text">C1</b>
+        </div>
+        <div class="card-footer">
+          <div class="progress mb-3">
+            <div class="progress-bar bg-success" style="width:90%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"><img src="img/britain.png" alt=""> English</h5>
+          <b class="card-text">C1</b>
+        </div>
+        <div class="card-footer">
+          <div class="progress mb-3">
+            <div class="progress-bar bg-success" style="width:90%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"><img src="img/china.png" alt=""> Chinese</h5>
+          <b class="card-text">HSK2</b>
+        </div>
+        <div class="card-footer">
+          <div class="progress mb-3">
+            <div class="progress-bar bg-danger" style="width:30%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+</div>
 
       <!-- School -->
       <div class="card card-body py-5">
@@ -380,14 +375,7 @@
         </div>
       </div>
 
-
-
-
-    </div>
-
-    <!-- WORK -->
-    <div id="work" class="collapse">
-      <div class="card card-body bg-warning text-white py-5">
+      <div class="card card-body bg-success text-white py-5">
         <h2>My Skills</h2>
         <p class="lead">Here are all my skills, tools, programming languages and technologies that I have used in the IT area.</p>
       </div>
@@ -502,14 +490,66 @@
 
 
 
+    </div>
+
+    <!-- GAME -->
+    <div id="game" class="collapse">
+      <div class="card card-body bg-info text-white py-5">
+        <h2>LEMC Studio <i class="fa-solid fa-ghost"></i></h2>                
+        <p class="lead">Mobile and Web Gaming Studio</p>
+      </div>
+
+      <div class="card card-body py-5">
+        <h3 id="projects">Games</h3>
+        <p>Here you can find all the games developed by LEMC Studios</p>
+        <hr>
+
+        <!-- Projects I've worked on -->
+
+        <div>
+          <div class="row">
+            <!-- 01-10-2021 BARMER App - Android Developer -->
+            <div class="card" style="width: 18rem; border-color: rgb(0, 0, 0);">
+              <a href="https://luismendezc.github.io/site/"><img class="card-img-top" src="./img/ic_launcher.png" alt="LOTI"></a>
+              <div class="card-body">
+                <h6>LOTI - Mobile</h6>
+                <p class="card-text">LOTI adventures, game available on <a href="https://luismendezc.github.io/site/">Android</a> and <a href="https://luismendezc.github.io/site/">iOS</a></p>
+                <hr>
+                <h6>Version:</h6>
+                <p >0.2.7</p>
+                <p class="text-center text-secondary" >Platform game</p>
+              </div>
+            </div>
 
 
+
+          </div>
+        </div>
+        
+        
+      </div>
+
+
+
+      <div class="card card-body bg-info text-white py-5" style="height: 750px;">
+        
+          <canvas id = "collisionCanvas"></canvas>
+          <canvas id = "canvas1"></canvas>
+          <h1 id="reset">RESET</h1>
+        </div>
+        
+      </div>
+
+
+
+
+      
 
     </div>
 
     <!-- MUSIC -->
     <div id="music" class="collapse">
-      <div class="card card-body bg-secondary text-white py-5">
+      <div class="card card-body bg-warning text-white py-5">
           <h2>Fallen Dreamers <i class="fas fa-headphones"></i></h2>                
         <p class="lead">Mexican Lo-fi Group.</p>
       </div>
@@ -645,7 +685,7 @@
 
 
   
-  
+  <script src = "js/game.js"></script>
   <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.min.js" integrity="sha384-lpyLfhYuitXl2zRZ5Bn2fqnhNAKOAaM/0Kr9laMspuaMiZfGmfwRNFh8HlMy49eQ" crossorigin="anonymous"></script>
