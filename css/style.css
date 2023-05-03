@@ -10,6 +10,31 @@
   opacity: 0.8;
   cursor: pointer; }
 
+  #canvas1{
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    height : auto;
+    width: 100%;
+    border-style: solid;
+    border-radius: 5px;
+    border-width: 10px;
+    border-color: rgba(0,52,111,1);
+    background: linear-gradient(360deg, rgba(177,217,255,1) 0%, rgba(51,204,255,1) 59%, rgba(22,89,185,1) 100%);
+}
+
+#collisionCanvas{
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  height : auto;
+  width: 100%;
+  opacity: 0;
+}
+
+
 .bg-black {
   color: #fff;
   background: #000; }
