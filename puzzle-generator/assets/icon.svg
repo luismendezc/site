@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <radialGradient id="sclera" cx="0.45" cy="0.4" r="0.55">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="85%" stop-color="#f0f0f2"/>
+      <stop offset="100%" stop-color="#d8dae0"/>
+    </radialGradient>
+    <radialGradient id="iris" cx="0.55" cy="0.6" r="0.5">
+      <stop offset="0%" stop-color="#4a4a4a"/>
+      <stop offset="100%" stop-color="#2a2a2e"/>
+    </radialGradient>
+    <radialGradient id="shine" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.8"/>
+    </radialGradient>
+
+    <!-- Normal eye (looking forward) -->
+    <symbol id="eye" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="48" fill="url(#sclera)" stroke="#c0c2c8" stroke-width="1.5"/>
+      <circle cx="52" cy="54" r="27" fill="url(#iris)"/>
+      <circle cx="52" cy="54" r="14" fill="#1a1a1e"/>
+      <circle cx="40" cy="40" r="8" fill="url(#shine)"/>
+      <circle cx="38" cy="48" r="3.5" fill="#ffffff" opacity="0.7"/>
+    </symbol>
+
+    <!-- Blinking eye (half-closed lids) -->
+    <symbol id="eye-blink" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="48" fill="url(#sclera)" stroke="#c0c2c8" stroke-width="1.5"/>
+      <!-- Iris peeking through squint -->
+      <circle cx="52" cy="52" r="20" fill="url(#iris)"/>
+      <circle cx="52" cy="52" r="10" fill="#1a1a1e"/>
+      <!-- Top eyelid -->
+      <path d="M2 50 Q50 20 98 50 Q50 56 2 50Z" fill="#d8dae0"/>
+      <!-- Bottom eyelid -->
+      <path d="M2 50 Q50 80 98 50 Q50 56 2 50Z" fill="#e8e8ec"/>
+      <!-- Lid line -->
+      <path d="M6 50 Q50 42 94 50" fill="none" stroke="#b0b2b8" stroke-width="2"/>
+      <path d="M6 50 Q50 58 94 50" fill="none" stroke="#c8cacc" stroke-width="1.5"/>
+      <!-- Small highlight -->
+      <circle cx="40" cy="46" r="5" fill="url(#shine)"/>
+    </symbol>
+
+    <!-- Eye looking left -->
+    <symbol id="eye-left" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="48" fill="url(#sclera)" stroke="#c0c2c8" stroke-width="1.5"/>
+      <circle cx="34" cy="54" r="27" fill="url(#iris)"/>
+      <circle cx="34" cy="54" r="14" fill="#1a1a1e"/>
+      <circle cx="24" cy="40" r="8" fill="url(#shine)"/>
+      <circle cx="22" cy="48" r="3.5" fill="#ffffff" opacity="0.7"/>
+    </symbol>
+
+    <!-- Eye looking right -->
+    <symbol id="eye-right" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="48" fill="url(#sclera)" stroke="#c0c2c8" stroke-width="1.5"/>
+      <circle cx="66" cy="54" r="27" fill="url(#iris)"/>
+      <circle cx="66" cy="54" r="14" fill="#1a1a1e"/>
+      <circle cx="56" cy="40" r="8" fill="url(#shine)"/>
+      <circle cx="54" cy="48" r="3.5" fill="#ffffff" opacity="0.7"/>
+    </symbol>
+  </defs>
+
+  <!-- Background: rounded sky blue square -->
+  <rect width="1024" height="1024" rx="180" ry="180" fill="#3FB1D5"/>
+  <rect width="1024" height="1024" rx="180" ry="180" fill="none" stroke="#2d8fad" stroke-width="8"/>
+
+  <!-- 5 eyes in domino pattern -->
+  <!-- Top-left: looking left -->
+  <use href="#eye-left" x="310" y="310" width="120" height="120"/>
+  <!-- Top-right: normal -->
+  <use href="#eye" x="594" y="310" width="120" height="120"/>
+  <!-- Center: looking left -->
+  <use href="#eye-left" x="452" y="452" width="120" height="120"/>
+  <!-- Bottom-left: normal -->
+  <use href="#eye" x="310" y="594" width="120" height="120"/>
+  <!-- Bottom-right: looking right -->
+  <use href="#eye-right" x="594" y="594" width="120" height="120"/>
+</svg>
