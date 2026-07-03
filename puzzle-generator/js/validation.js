@@ -129,7 +129,6 @@ export function validate(model) {
     const cells = parseCellList(cond.cells);
     if (!cells.length) errors.push(`Condición ${i + 1}: se requiere al menos una celda.`);
     if (cond.operator === '=' && cells.length < 2) errors.push(`Condición ${i + 1}: el operador '=' necesita al menos 2 celdas.`);
-    if (cond.operator === 'sum' && cells.length < 2) errors.push(`Condición ${i + 1}: el operador 'sum' necesita al menos 2 celdas.`);
     for (const cn of cells) {
       if (cn && !allCells.has(cn)) errors.push(`Condición ${i + 1}: la celda ${cn} no está en la cuadrícula.`);
       else if (cn && m.blockedCells.has(cn)) errors.push(`Condición ${i + 1}: la celda ${cn} está bloqueada.`);
