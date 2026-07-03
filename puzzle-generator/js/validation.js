@@ -19,7 +19,6 @@ export function validate(model) {
     if (m.pieces.length < minP) warnings.push(`Piezas insuficientes: ${m.pieces.length} (mínimo ${minP} para '${name}').`);
     else if (m.pieces.length > maxP) warnings.push(`Demasiadas piezas: ${m.pieces.length} (máximo ${maxP} para '${name}').`);
     if (m.conditions.length < minC) warnings.push(`Condiciones insuficientes: ${m.conditions.length} (mínimo ${minC} para '${name}').`);
-    else if (m.conditions.length > maxC) warnings.push(`Demasiadas condiciones: ${m.conditions.length} (máximo ${maxC} para '${name}').`);
     if (m.monsterCells.length < minM) warnings.push(`Monstruos insuficientes: ${m.monsterCells.length} (mínimo ${minM} para '${name}').`);
     else if (m.monsterCells.length > maxM) warnings.push(`Demasiados monstruos: ${m.monsterCells.length} (máximo ${maxM} para '${name}').`);
   }
