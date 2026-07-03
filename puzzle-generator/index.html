@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AlienPacked — Generador de Puzzles</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+</head>
+<body>
+
+  <!-- Planet decoration -->
+  <img src="assets/planet.png" class="planet-deco" alt="">
+
+  <!-- Header -->
+  <div class="header-bar d-flex align-items-center flex-wrap gap-3">
+    <div class="d-flex align-items-center">
+      <img src="assets/icon.svg" class="logo" alt="AlienPacked">
+      <div>
+        <div class="title">AlienPacked Generador de Puzzles</div>
+        <div class="subtitle">Crea puzzles para creadores de contenido</div>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <div class="input-group input-group-sm" style="width:auto">
+        <span class="input-group-text">Dificultad</span>
+        <select id="difficulty-select" class="form-select" style="width:140px">
+          <option value="extra_facil">Extra Fácil</option>
+          <option value="facil" selected>Fácil</option>
+          <option value="medio_bajo">Medio Bajo</option>
+          <option value="medio_alto">Medio Alto</option>
+          <option value="dificil_bajo">Difícil Bajo</option>
+          <option value="dificil_alto">Difícil Alto</option>
+        </select>
+      </div>
+      <span id="grid-label" class="diff-badge">4 filas × 4 columnas</span>
+      <div class="input-group input-group-sm" style="width:auto">
+        <span class="input-group-text">ID</span>
+        <input type="number" id="puzzle-id" class="form-control" value="1" min="1" max="9999" style="width:65px">
+      </div>
+    </div>
+  </div>
+  <div class="px-3 py-1">
+    <small id="diff-info" class="text-muted" style="font-size:0.75rem"></small>
+  </div>
+
+  <!-- Main layout -->
+  <div class="container-fluid px-3 mt-1">
+    <div class="row g-3">
+      <!-- Left: Cuadrícula -->
+      <div class="col-lg-5 col-md-6">
+        <div class="game-card">
+          <div class="card-header d-flex align-items-center gap-2">
+            <img src="assets/eye_idle.png" style="width:20px;height:20px;opacity:0.7" alt="">
+            Cuadrícula
+            <span class="text-muted" style="font-size:0.7rem">(clic: alternar bloqueada | clic der: monstruo)</span>
+          </div>
+          <div class="card-body">
+            <div id="grid-wrapper">
+              <canvas id="grid-canvas"></canvas>
+            </div>
+          </div>
+        </div>
+        <div id="legend" class="mt-1 px-1">
+          <span class="swatch" style="background:#3a3a3a"></span>Vacía
+          <span class="swatch" style="background:#1a1a1a;margin-left:8px"></span>Bloqueada
+          <span class="swatch" style="background:#990000;margin-left:8px"></span>Monstruo
+          <span class="swatch" style="background:#F14B6B;margin-left:8px"></span>Solución
+          <span class="swatch" style="background:#00FFFF;margin-left:8px"></span>Seleccionada
+        </div>
+      </div>
+
+      <!-- Right: Pestañas -->
+      <div class="col-lg-7 col-md-6">
+        <ul class="nav nav-tabs" role="tablist">
+          <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab-pieces">Piezas</a></li>
+          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-solution">Solución</a></li>
+          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-conditions">Condiciones</a></li>
+          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-monsters">Monstruos</a></li>
+        </ul>
+        <div class="tab-content">
+          <!-- Piezas -->
+          <div class="tab-pane fade show active" id="tab-pieces">
+            <button id="btn-add-piece" class="btn-add mb-2">+ Agregar Pieza</button>
+            <div id="pieces-list"></div>
+          </div>
+          <!-- Solución -->
+          <div class="tab-pane fade" id="tab-solution">
+            <button id="btn-add-solution" class="btn-add mb-2">+ Agregar Entrada</button>
+            <div id="solution-list"></div>
+          </div>
+          <!-- Condiciones -->
+          <div class="tab-pane fade" id="tab-conditions">
+            <button id="btn-add-condition" class="btn-add mb-2">+ Agregar Condición</button>
+            <div id="conditions-list"></div>
+          </div>
+          <!-- Monstruos -->
+          <div class="tab-pane fade" id="tab-monsters">
+            <button id="btn-add-monster" class="btn-add mb-2">+ Agregar Monstruo</button>
+            <div id="monsters-list"></div>
+            <hr style="border-color:var(--space-card-border)">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <img src="assets/box_closed.png" style="width:22px;height:22px;opacity:0.6" alt="">
+              <strong style="font-size:0.85rem;color:var(--accent-purple)">Solución de Monstruos</strong>
+              <small class="text-muted">(qué pieza alimenta a qué monstruo)</small>
+            </div>
+            <button id="btn-add-monster-sol" class="btn-add mb-2">+ Agregar Entrada</button>
+            <div id="monster-solution-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barra de acciones -->
+    <div class="action-bar mt-3 mb-3 d-flex flex-wrap gap-2 align-items-start">
+      <button id="btn-validate" class="btn-game btn-game-green">Validar</button>
+      <button id="btn-prove" class="btn-game btn-game-blue">Probar</button>
+      <button id="btn-export" class="btn-game btn-game-yellow">Exportar JSON</button>
+      <button id="btn-import" class="btn-game btn-game-outline">Importar JSON</button>
+      <input type="file" id="file-input" accept=".json" class="d-none">
+    </div>
+    <div id="results" class="alert alert-results d-none"></div>
+  </div>
+
+  <!-- Modal de Monstruo -->
+  <div class="modal fade" id="monster-modal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header py-2">
+          <div class="d-flex align-items-center gap-2">
+            <span style="font-size:1.2rem">👾</span>
+            <h6 class="modal-title mb-0" id="monster-modal-title" style="color:var(--accent-purple)">Monstruo</h6>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-2">
+            <label class="form-label small" style="color:var(--text-muted)">Expresión (interna)</label>
+            <input type="text" class="form-control form-control-sm" id="monster-expr" placeholder="3*4-2">
+          </div>
+          <div class="mb-2">
+            <label class="form-label small" style="color:var(--text-muted)">Mostrar (visible al jugador)</label>
+            <input type="text" class="form-control form-control-sm" id="monster-display" placeholder="3×4−2">
+          </div>
+          <div class="mb-2">
+            <label class="form-label small" style="color:var(--text-muted)">Respuesta</label>
+            <input type="number" class="form-control form-control-sm" id="monster-answer" min="0" max="999" value="0">
+          </div>
+        </div>
+        <div class="modal-footer py-1">
+          <button id="monster-remove" class="btn-game btn-game-red btn-sm d-none" style="font-size:0.75rem;padding:4px 14px">Quitar</button>
+          <button id="monster-save" class="btn-game btn-game-purple btn-sm" style="font-size:0.75rem;padding:4px 14px">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
