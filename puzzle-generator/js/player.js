@@ -516,7 +516,7 @@ export class PuzzlePlayer {
       return;
     }
 
-    if (this.blocked.has(cell)) return;
+    if (this.blocked.has(cell) || this.monsters.has(cell)) return;
 
     // If clicking a placed piece — pick it up
     if (this.grid.has(cell)) {
@@ -555,7 +555,8 @@ export class PuzzlePlayer {
       return;
     }
 
-    if (this.grid.has(c2) || this.blocked.has(c2) || this.monsters.has(c2)) {
+    if (this.grid.has(c1) || this.blocked.has(c1) || this.monsters.has(c1) ||
+        this.grid.has(c2) || this.blocked.has(c2) || this.monsters.has(c2)) {
       this.firstCell = null;
       this.draw();
       return;
