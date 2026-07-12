@@ -115,7 +115,9 @@ export function generatePuzzle(difficulty, puzzleId) {
 
 function tryGenerate(difficulty, puzzleId, rows, cols, minP, maxP, minC, maxC, minM, maxM) {
   const numPieces = randInt(minP, maxP);
-  const numMonsters = randInt(minM, Math.min(maxM, numPieces - 1));
+  // Cap monsters: at most half the pieces (rounded down), and leave at least 2 grid pieces
+  const monsterCap = Math.min(maxM, Math.floor(numPieces / 2), numPieces - 2);
+  const numMonsters = monsterCap > minM ? randInt(minM, monsterCap) : minM;
   const gridPieces = numPieces - numMonsters;
   const numConditions = randInt(minC, maxC);
 
