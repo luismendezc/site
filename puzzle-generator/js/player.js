@@ -82,8 +82,9 @@ export class PuzzlePlayer {
     this.modal.querySelector('#play-check').addEventListener('click', () => this._onCheck());
     this.modal.querySelector('#play-reset').addEventListener('click', () => this._onReset());
 
+    this._resizeHandler = () => this._resizeCanvases();
     this._resizeCanvases();
-    window.addEventListener('resize', () => this._resizeCanvases());
+    window.addEventListener('resize', this._resizeHandler);
   }
 
   _loadImages() {
@@ -528,6 +529,8 @@ export class PuzzlePlayer {
         this.grid.delete(placement.cell2);
         this.placedPieces.delete(pid);
         this.tray.push(pid);
+        this.selectedPiece = null;
+        this.firstCell = null;
         this.draw();
       }
       return;
@@ -679,8 +682,9 @@ export class PuzzlePlayer {
         // Shake animation
         this.gridCanvas.classList.add('shake');
         setTimeout(() => this.gridCanvas.classList.remove('shake'), 500);
-        // Clear failed highlights after 2s
-        setTimeout(() => { this.failedConditions.clear(); this.draw(); }, 2000);
+        // Clear failed highlights after 2s (cancel previous timer to avoid race)
+        if (this._checkTimeout) clearTimeout(this._checkTimeout);
+        this._checkTimeout = setTimeout(() => { this.failedConditions.clear(); this.draw(); }, 2000);
       }
     }
   }
@@ -763,6 +767,7 @@ export class PuzzlePlayer {
   }
 
   destroy() {
-    window.removeEventListener('resize', this._resizeCanvases);
+    if (this._resizeHandler) window.removeEventListener('resize', this._resizeHandler);
+    if (this._checkTimeout) clearTimeout(this._checkTimeout);
   }
 }

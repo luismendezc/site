@@ -39,7 +39,14 @@ function generateExpression(answer) {
   } else if (op === '-') {
     b = randInt(1, 12);
     a = answer + b;
-    if (a > 24) { a = answer; b = 0; }
+    if (a > 24) {
+      // Fallback to addition instead of producing N-0
+      a = randInt(0, answer);
+      b = answer - a;
+      expr = `${a}+${b}`;
+      display = `${a}+${b}`;
+      return { expression: expr, display, answer };
+    }
     expr = `${a}-${b}`;
     display = `${a}−${b}`;
   } else {

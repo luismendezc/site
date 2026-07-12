@@ -124,6 +124,7 @@ export function validate(model) {
   }
 
   // Condiciones
+  const condCellOwner = {}; // cell -> condition index (1-based)
   for (let i = 0; i < m.conditions.length; i++) {
     const cond = m.conditions[i];
     const cells = parseCellList(cond.cells);
@@ -132,6 +133,12 @@ export function validate(model) {
     for (const cn of cells) {
       if (cn && !allCells.has(cn)) errors.push(`Condición ${i + 1}: la celda ${cn} no está en la cuadrícula.`);
       else if (cn && m.blockedCells.has(cn)) errors.push(`Condición ${i + 1}: la celda ${cn} está bloqueada.`);
+      // Check for overlapping conditions
+      if (cn && condCellOwner[cn] !== undefined) {
+        errors.push(`Condición ${i + 1}: la celda ${cn} ya está en la condición ${condCellOwner[cn]}. Las celdas no pueden pertenecer a múltiples condiciones.`);
+      } else if (cn) {
+        condCellOwner[cn] = i + 1;
+      }
     }
     // Advertencia: celdas de condición que se superponen con monstruos
     for (const cn of cells) {
