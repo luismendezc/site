@@ -119,8 +119,8 @@ export function validate(model) {
 
   // Valores de piezas
   for (const p of m.pieces) {
-    if (p.left < 0 || p.left > 12 || p.right < 0 || p.right > 12)
-      errors.push(`Pieza #${p.id}: los valores deben ser 0-12.`);
+    if (p.left < 1 || p.left > 12 || p.right < 1 || p.right > 12)
+      errors.push(`Pieza #${p.id}: los valores deben ser 1-12.`);
   }
 
   // Condiciones
