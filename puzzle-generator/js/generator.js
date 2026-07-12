@@ -232,13 +232,19 @@ function tryGenerate(difficulty, puzzleId, rows, cols, minP, maxP, minC, maxC, m
   // Generate conditions from actual cell values (piece cells only)
   const pieceCellList = [...usedCells]; // cells with pieces on them
   const conditions = [];
-  const usedCondCells = new Set(); // track to avoid too much overlap
+  const usedCondCells = new Set(); // cells already claimed by a condition
 
   for (let ci = 0; ci < numConditions; ci++) {
-    const groupSize = randInt(1, Math.min(4, pieceCellList.length));
-    const group = buildContiguousGroup(pieceCellList, rows, cols, groupSize);
+    const remainingCells = pieceCellList.filter(c => !usedCondCells.has(c));
+    if (remainingCells.length < 1) break; // no more cells available
+
+    const groupSize = randInt(1, Math.min(4, remainingCells.length));
+    const group = buildContiguousGroup(remainingCells, rows, cols, groupSize);
 
     if (group.length < 1) continue;
+
+    // Mark these cells as used by conditions
+    for (const c of group) usedCondCells.add(c);
 
     const values = group.map(c => cellValues[c] ?? 0);
     const sum = values.reduce((a, b) => a + b, 0);
