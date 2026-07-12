@@ -165,8 +165,14 @@ function tryGenerate(difficulty, puzzleId, rows, cols, minP, maxP, minC, maxC, m
 
   if (placements.length < gridPieces) return null; // couldn't place enough
 
-  // Blocked cells = available cells not used by pieces
-  const blockedCells = availableCells.filter(c => !usedCells.has(c));
+  // Split unused cells into blocked vs empty decoys
+  const unusedCells = availableCells.filter(c => !usedCells.has(c));
+  shuffle(unusedCells);
+  // Keep 1-3 cells as empty decoys (random noise), scale with grid size
+  const maxDecoys = Math.min(3, Math.floor(unusedCells.length * 0.4));
+  const numDecoys = unusedCells.length > 0 ? randInt(0, maxDecoys) : 0;
+  const decoyCells = new Set(unusedCells.slice(0, numDecoys));
+  const blockedCells = unusedCells.filter(c => !decoyCells.has(c));
 
   // Assign random values to each piece half
   const pieces = [];
@@ -229,8 +235,10 @@ function tryGenerate(difficulty, puzzleId, rows, cols, minP, maxP, minC, maxC, m
     monsterSolution.push({ monster_cell: monsterCellNames[i], piece: sacId });
   }
 
-  // Generate conditions from actual cell values (piece cells only)
-  const pieceCellList = [...usedCells]; // cells with pieces on them
+  // Generate conditions from piece cells + empty decoy cells
+  // Decoy cells have value 0, adding noise so the player can't just
+  // match open cells to piece slots
+  const pieceCellList = [...usedCells, ...decoyCells];
   const conditions = [];
   const usedCondCells = new Set(); // cells already claimed by a condition
 
