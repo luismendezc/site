@@ -4,6 +4,7 @@ import { GridRenderer } from './grid.js';
 import { TabsUI } from './tabs.js';
 import { validate, prove } from './validation.js';
 import { computeRotation, parseCellList } from './cell-utils.js';
+import { generatePuzzle, generateBatch } from './generator.js';
 
 const model = new PuzzleModel();
 
@@ -166,6 +167,104 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     reader.readAsText(file);
     e.target.value = '';
+  });
+
+  // Randomize
+  document.getElementById('btn-randomize').addEventListener('click', () => {
+    const diff = diffSel.value;
+    const id = model.puzzleId;
+    const data = generatePuzzle(diff, id);
+    if (data) {
+      loadFromJSON(data);
+      showResult(`Puzzle #${id} generado aleatoriamente (${diff}).`, 'success');
+    } else {
+      showResult('No se pudo generar un puzzle válido. Intenta de nuevo.', 'danger');
+    }
+  });
+
+  // Batch Randomize
+  document.getElementById('btn-batch').addEventListener('click', () => {
+    new bootstrap.Modal(document.getElementById('batch-modal')).show();
+  });
+
+  document.getElementById('btn-add-pin').addEventListener('click', () => {
+    const div = document.createElement('div');
+    div.className = 'd-flex gap-2 mb-1 batch-pin-row';
+    div.innerHTML = `
+      <input type="number" class="form-control form-control-sm pin-level" placeholder="Level #" min="1" style="width:80px">
+      <select class="form-select form-select-sm pin-diff" style="width:130px">
+        <option value="extra_facil">Extra Fácil</option>
+        <option value="facil">Fácil</option>
+        <option value="medio_bajo">Medio Bajo</option>
+        <option value="medio_alto">Medio Alto</option>
+        <option value="dificil_bajo">Difícil Bajo</option>
+        <option value="dificil_alto">Difícil Alto</option>
+      </select>
+      <button class="btn btn-sm btn-outline-danger pin-remove">×</button>`;
+    div.querySelector('.pin-remove').addEventListener('click', () => div.remove());
+    document.getElementById('batch-pins').appendChild(div);
+  });
+
+  document.getElementById('batch-generate').addEventListener('click', async () => {
+    const total = parseInt(document.getElementById('batch-total').value) || 25;
+    const startId = parseInt(document.getElementById('batch-start-id').value) || 1;
+
+    const counts = {};
+    for (const input of document.querySelectorAll('.batch-count')) {
+      counts[input.dataset.diff] = parseInt(input.value) || 0;
+    }
+    const sum = Object.values(counts).reduce((a, b) => a + b, 0);
+    const warn = document.getElementById('batch-sum-warn');
+    if (sum !== total) {
+      warn.textContent = `(suma ${sum} ≠ ${total})`;
+      warn.classList.remove('d-none');
+      return;
+    }
+    warn.classList.add('d-none');
+
+    const pins = [];
+    for (const row of document.querySelectorAll('.batch-pin-row')) {
+      const levelNum = parseInt(row.querySelector('.pin-level').value);
+      const difficulty = row.querySelector('.pin-diff').value;
+      if (levelNum) pins.push({ levelNum, difficulty });
+    }
+
+    const progressWrap = document.getElementById('batch-progress-wrap');
+    const progressBar = document.getElementById('batch-progress');
+    progressWrap.classList.remove('d-none');
+    progressBar.style.width = '0%';
+    progressBar.textContent = '0%';
+
+    const results = await generateBatch({ totalLevels: total, startId, counts, pins }, (cur, tot) => {
+      const pct = Math.round((cur / tot) * 100);
+      progressBar.style.width = pct + '%';
+      progressBar.textContent = `${cur}/${tot}`;
+    });
+
+    const failed = results.filter(r => !r.data);
+    if (failed.length > 0) {
+      progressBar.textContent = `${results.length - failed.length}/${total} OK, ${failed.length} failed`;
+    }
+
+    // Package as ZIP
+    const zip = new JSZip();
+    const levelsFolder = zip.folder('levels');
+    for (const r of results) {
+      if (r.data) levelsFolder.file(r.filename, JSON.stringify(r.data, null, 2));
+    }
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `puzzles_batch_${startId}_to_${startId + total - 1}.zip`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+
+    progressBar.classList.remove('progress-bar-animated');
+    progressBar.textContent = 'Done!';
+    setTimeout(() => {
+      progressWrap.classList.add('d-none');
+      progressBar.classList.add('progress-bar-animated');
+    }, 2000);
   });
 
   // Render inicial
