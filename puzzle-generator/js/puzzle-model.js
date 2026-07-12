@@ -31,9 +31,9 @@ export const DIFFICULTY_LIMITS = {
   extra_facil: [2, 3, 1, 2, 0, 0],
   facil:       [3, 4, 2, 3, 0, 2],
   medio_bajo:  [4, 5, 3, 4, 0, 2],
-  medio_alto:  [5, 6, 4, 5, 1, 3],
-  dificil_bajo:[6, 7, 5, 6, 1, 3],
-  dificil_alto:[7, 12, 6, 12, 2, 4],
+  medio_alto:  [5, 6, 4, 5, 0, 3],
+  dificil_bajo:[6, 7, 5, 6, 0, 3],
+  dificil_alto:[7, 12, 6, 12, 0, 4],
 };
 
 export class PuzzleModel {
