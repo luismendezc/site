@@ -496,6 +496,16 @@ export class PuzzlePlayer {
         return;
       }
       if (this.selectedPiece !== null) {
+        const piece = this.pieces.find(p => p.id === this.selectedPiece);
+        const monster = this.monsters.get(cell);
+        if (!piece || !monster || piece.left + piece.right !== monster.answer) {
+          // Wrong piece — shake and show message
+          this.gridCanvas.classList.add('shake');
+          setTimeout(() => this.gridCanvas.classList.remove('shake'), 500);
+          this._showMessage(`Pieza #${this.selectedPiece} (${piece ? piece.left + '+' + piece.right + '=' + (piece.left + piece.right) : '?'}) no satisface al monstruo`, 'warning');
+          setTimeout(() => this._hideMessage(), 2000);
+          return;
+        }
         this.monsterFeedings.set(cell, this.selectedPiece);
         this.tray = this.tray.filter(id => id !== this.selectedPiece);
         this.selectedPiece = null;
