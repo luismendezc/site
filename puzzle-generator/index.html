@@ -113,17 +113,36 @@
     </div>
 
     <!-- Barra de acciones -->
-    <div class="action-bar mt-3 mb-3 d-flex flex-wrap gap-2 align-items-start">
-      <button id="btn-validate" class="btn-game btn-game-green">Validar</button>
-      <button id="btn-prove" class="btn-game btn-game-blue">Probar</button>
-      <button id="btn-export" class="btn-game btn-game-yellow">Exportar JSON</button>
-      <button id="btn-import" class="btn-game btn-game-outline">Importar JSON</button>
-      <input type="file" id="file-input" accept=".json" class="d-none">
-      <button id="btn-randomize" class="btn-game btn-game-outline" style="border-color:#198754;color:#198754">Randomize</button>
-      <button id="btn-batch" class="btn-game btn-game-outline" style="border-color:#0d6efd;color:#0d6efd">Batch Randomize</button>
+    <div class="action-bar mt-3 mb-3">
+      <div class="action-group">
+        <span class="action-group-label">Editor</span>
+        <button id="btn-validate" class="btn-game btn-game-green">✓ Validar</button>
+        <button id="btn-prove" class="btn-game btn-game-blue">⚡ Probar</button>
+        <button id="btn-play" class="btn-game btn-game-play d-none">▶ Jugar</button>
+      </div>
+      <div class="action-divider"></div>
+      <div class="action-group">
+        <span class="action-group-label">Archivo</span>
+        <button id="btn-export" class="btn-game btn-game-yellow">↓ Exportar JSON</button>
+        <button id="btn-import" class="btn-game btn-game-outline">↑ Importar JSON</button>
+        <input type="file" id="file-input" accept=".json" class="d-none">
+      </div>
+      <div class="action-divider"></div>
+      <div class="action-group">
+        <span class="action-group-label">Generador</span>
+        <button id="btn-randomize" class="btn-game btn-game-outline" style="border-color:#198754;color:#198754">🎲 Randomize</button>
+        <button id="btn-batch" class="btn-game btn-game-outline" style="border-color:#0d6efd;color:#0d6efd">📦 Batch</button>
+      </div>
     </div>
     <div id="results" class="alert alert-results d-none"></div>
   </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <span>AlienPacked Puzzle Generator v1.0</span>
+    <span class="text-muted">·</span>
+    <span class="text-muted">Oceloti Studio</span>
+  </footer>
 
   <!-- Modal de Monstruo -->
   <div class="modal fade" id="monster-modal" tabindex="-1">
@@ -213,6 +232,38 @@
         </div>
         <div class="modal-footer py-1">
           <button id="batch-generate" class="btn-game btn-game-purple btn-sm" style="font-size:0.8rem;padding:5px 18px">Generar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Play Modal -->
+  <div class="modal fade" id="play-modal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-fullscreen">
+      <div class="modal-content play-modal-content">
+        <div class="play-header">
+          <div class="d-flex align-items-center gap-2">
+            <span style="font-size:1.3rem">🎮</span>
+            <h6 class="mb-0" style="color:var(--accent-blue)">Modo Jugar</h6>
+          </div>
+          <div class="d-flex align-items-center gap-3">
+            <div id="play-lives"></div>
+            <button id="play-check" class="btn-game btn-game-green btn-sm" style="font-size:0.8rem;padding:5px 16px">Comprobar</button>
+            <button id="play-reset" class="btn-game btn-game-outline btn-sm" style="font-size:0.8rem;padding:5px 16px">Reiniciar</button>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+        </div>
+        <div id="play-message" class="play-message d-none"></div>
+        <div class="play-body">
+          <div class="play-grid-wrap">
+            <canvas id="play-grid"></canvas>
+          </div>
+          <div class="play-info-bar">
+            <small class="text-muted">Clic en pieza del tray para seleccionar · Clic en 2 celdas adyacentes para colocar · Clic derecho para rotar · Clic en pieza colocada para recoger</small>
+          </div>
+          <div class="play-tray-wrap">
+            <canvas id="play-tray"></canvas>
+          </div>
         </div>
       </div>
     </div>

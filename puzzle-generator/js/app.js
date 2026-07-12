@@ -5,6 +5,7 @@ import { TabsUI } from './tabs.js';
 import { validate, prove } from './validation.js';
 import { computeRotation, parseCellList } from './cell-utils.js';
 import { generatePuzzle, generateBatch } from './generator.js';
+import { PuzzlePlayer } from './player.js';
 
 const model = new PuzzleModel();
 
@@ -89,6 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  const btnPlay = document.getElementById('btn-play');
+  let currentPlayer = null;
+
   document.getElementById('btn-prove').addEventListener('click', () => {
     const { pass, errors, warnings, results } = prove(model);
     if (errors.length > 0) {
@@ -98,15 +102,67 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       msg += '✗ Validación fallida:\n' + errors.map(e => '  ✗ ' + e).join('\n');
       showResult(msg.trim(), 'danger');
+      btnPlay.classList.add('d-none');
     } else if (pass) {
       let msg = '✓ ¡Todas las condiciones pasan!\n\n' + results.join('\n');
       if (warnings.length > 0) {
         msg += '\n\n⚠ Advertencias de dificultad:\n' + warnings.map(w => '  ⚠ ' + w).join('\n');
       }
       showResult(msg, warnings.length > 0 ? 'warning' : 'success');
+      btnPlay.classList.remove('d-none');
     } else {
       showResult('✗ Algunas condiciones fallaron:\n\n' + results.join('\n'), 'danger');
+      btnPlay.classList.add('d-none');
     }
+  });
+
+  // Play button — opens play modal
+  btnPlay.addEventListener('click', () => {
+    const pieceMap = {};
+    for (const p of model.pieces) pieceMap[p.id] = p;
+
+    const puzzleData = {
+      id: model.puzzleId,
+      difficulty: model.difficulty,
+      grid_cols: model.gridCols,
+      grid_rows: model.gridRows,
+      lives: 3,
+      blocked_cells: [...model.blockedCells].sort(),
+      monster_cells: model.monsterCells.filter(m => m.cell).map(m => ({
+        cell: m.cell, expression: m.expression, display: m.display || '', answer: m.answer
+      })),
+      pieces: model.pieces.map(p => ({ id: p.id, left: p.left, right: p.right })),
+      conditions: model.conditions.map(c => ({
+        cells: parseCellList(c.cells),
+        operator: c.operator,
+        value: c.operator === '=' ? 0 : c.value
+      })),
+      solution: model.solution.map(s => {
+        const piece = pieceMap[s.pieceId];
+        const rot = piece ? computeRotation(s.cell1, s.cell2, s.val1, s.val2, piece.left, piece.right) : 0;
+        return { piece: s.pieceId, cells: [s.cell1, s.cell2], rotation: rot };
+      }),
+      monster_solution: model.monsterSolution.filter(ms => ms.monsterCell).map(ms => ({
+        monster_cell: ms.monsterCell, piece: ms.pieceId
+      }))
+    };
+
+    if (currentPlayer) currentPlayer.destroy();
+
+    const modalEl = document.getElementById('play-modal');
+    const bsModal = new bootstrap.Modal(modalEl);
+    bsModal.show();
+
+    // Wait for modal to be visible before initializing player
+    modalEl.addEventListener('shown.bs.modal', function onShown() {
+      modalEl.removeEventListener('shown.bs.modal', onShown);
+      currentPlayer = new PuzzlePlayer(modalEl, puzzleData);
+    });
+
+    modalEl.addEventListener('hidden.bs.modal', function onHidden() {
+      modalEl.removeEventListener('hidden.bs.modal', onHidden);
+      if (currentPlayer) { currentPlayer.destroy(); currentPlayer = null; }
+    });
   });
 
   // Exportar
