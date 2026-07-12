@@ -37,7 +37,7 @@ function generateExpression(answer) {
     expr = `${a}+${b}`;
     display = `${a}+${b}`;
   } else if (op === '-') {
-    b = randInt(0, 12);
+    b = randInt(1, 12);
     a = answer + b;
     if (a > 24) { a = answer; b = 0; }
     expr = `${a}-${b}`;
@@ -175,8 +175,8 @@ function tryGenerate(difficulty, puzzleId, rows, cols, minP, maxP, minC, maxC, m
 
   for (let i = 0; i < placements.length; i++) {
     const id = i + 1;
-    const left = randInt(0, 12);
-    const right = randInt(0, 12);
+    const left = randInt(1, 12);
+    const right = randInt(1, 12);
     pieces.push({ id, left, right });
 
     const { cell1, cell2 } = placements[i];
@@ -200,7 +200,7 @@ function tryGenerate(difficulty, puzzleId, rows, cols, minP, maxP, minC, maxC, m
     let answer = -1;
     const tried = new Set();
     for (let t = 0; t < 100; t++) {
-      const candidate = randInt(0, 24);
+      const candidate = randInt(2, 24);
       if (!pieceSums.has(candidate) && !tried.has(candidate)) {
         answer = candidate;
         break;
@@ -221,9 +221,9 @@ function tryGenerate(difficulty, puzzleId, rows, cols, minP, maxP, minC, maxC, m
 
     // Sacrifice piece
     const sacId = pieces.length + 1;
-    const sacLeft = randInt(0, Math.min(answer, 12));
+    const sacLeft = randInt(1, Math.min(answer - 1, 12));
     const sacRight = answer - sacLeft;
-    if (sacRight < 0 || sacRight > 12) return null;
+    if (sacRight < 1 || sacRight > 12) return null;
 
     pieces.push({ id: sacId, left: sacLeft, right: sacRight });
     monsterSolution.push({ monster_cell: monsterCellNames[i], piece: sacId });
