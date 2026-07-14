@@ -25,51 +25,242 @@ function getAdjacentCells(cell, rows, cols) {
   return adj;
 }
 
-function generateExpression(answer) {
-  // Generate a math expression that evaluates to answer
-  const ops = ['+', '-', '*'];
-  const op = ops[randInt(0, ops.length - 1)];
-  let a, b, expr, display;
+/**
+ * Generate a math expression that evaluates to answer.
+ * @param {number} answer - target value
+ * @param {string} difficulty - difficulty key (determines allowed operations)
+ *   Easy (extra_facil, facil): +, − only, 2 operands
+ *   Medium (medio_bajo, medio_alto): +, −, ×, /, 2-3 operands
+ *   Hard (dificil_bajo, dificil_alto): all ops + ^, √, 2-3 operands, must include ^ or √
+ */
+function generateExpression(answer, difficulty) {
+  const tier = getDifficultyTier(difficulty);
 
+  if (tier === 'hard') return generateHardExpression(answer);
+  if (tier === 'medium') return generateMediumExpression(answer);
+  return generateEasyExpression(answer);
+}
+
+function getDifficultyTier(difficulty) {
+  if (difficulty === 'dificil_bajo' || difficulty === 'dificil_alto') return 'hard';
+  if (difficulty === 'medio_bajo' || difficulty === 'medio_alto') return 'medium';
+  return 'easy';
+}
+
+// --- Easy: + and − only, 2 operands ---
+function generateEasyExpression(answer) {
+  const op = randInt(0, 1) === 0 ? '+' : '-';
   if (op === '+') {
-    a = randInt(0, answer);
-    b = answer - a;
-    expr = `${a}+${b}`;
-    display = `${a}+${b}`;
-  } else if (op === '-') {
-    b = randInt(1, 12);
-    a = answer + b;
-    if (a > 24) {
-      // Fallback to addition instead of producing N-0
-      a = randInt(0, answer);
-      b = answer - a;
-      expr = `${a}+${b}`;
-      display = `${a}+${b}`;
-      return { expression: expr, display, answer };
-    }
-    expr = `${a}-${b}`;
-    display = `${a}−${b}`;
-  } else {
-    // multiplication: find factors
+    const a = randInt(1, Math.max(answer - 1, 1));
+    const b = answer - a;
+    return { expression: `${a}+${b}`, display: `${a}+${b}`, answer };
+  }
+  // subtraction: a - b = answer, b in 1..12, a <= 24
+  const b = randInt(1, 12);
+  const a = answer + b;
+  if (a > 24) {
+    // fallback to addition
+    const x = randInt(1, Math.max(answer - 1, 1));
+    const y = answer - x;
+    return { expression: `${x}+${y}`, display: `${x}+${y}`, answer };
+  }
+  return { expression: `${a}-${b}`, display: `${a}−${b}`, answer };
+}
+
+// --- Medium: +, −, ×, /, 2-3 operands ---
+function generateMediumExpression(answer) {
+  // Try multi-step first (50% chance), fall back to 2-operand
+  if (randInt(0, 1) === 0) {
+    const multi = tryMediumMultiStep(answer);
+    if (multi) return multi;
+  }
+  return generateMediumTwoOp(answer);
+}
+
+function generateMediumTwoOp(answer) {
+  const ops = ['+', '-', '*', '/'];
+  shuffle(ops);
+  for (const op of ops) {
+    const result = tryTwoOp(answer, op);
+    if (result) return result;
+  }
+  // ultimate fallback
+  return generateEasyExpression(answer);
+}
+
+function tryTwoOp(answer, op) {
+  if (op === '+') {
+    const a = randInt(1, Math.max(answer - 1, 1));
+    const b = answer - a;
+    return { expression: `${a}+${b}`, display: `${a}+${b}`, answer };
+  }
+  if (op === '-') {
+    const b = randInt(1, 12);
+    const a = answer + b;
+    if (a > 24) return null;
+    return { expression: `${a}-${b}`, display: `${a}−${b}`, answer };
+  }
+  if (op === '*') {
     const factors = [];
-    for (let i = 1; i <= 12; i++) {
-      if (answer % i === 0 && answer / i <= 12) {
+    for (let i = 2; i <= 12; i++) {
+      if (answer % i === 0 && answer / i >= 2 && answer / i <= 12) {
         factors.push([i, answer / i]);
       }
     }
+    if (factors.length === 0) return null;
+    const [a, b] = factors[randInt(0, factors.length - 1)];
+    return { expression: `${a}*${b}`, display: `${a}×${b}`, answer };
+  }
+  if (op === '/') {
+    // a / b = answer → a = answer * b, both in reasonable range
+    const divisors = [];
+    for (let b = 2; b <= 12; b++) {
+      const a = answer * b;
+      if (a <= 144 && a >= 2) divisors.push([a, b]);
+    }
+    if (divisors.length === 0) return null;
+    const [a, b] = divisors[randInt(0, divisors.length - 1)];
+    return { expression: `${a}/${b}`, display: `${a}/${b}`, answer };
+  }
+  return null;
+}
+
+function tryMediumMultiStep(answer) {
+  // Try patterns: (a ○ b) □ c = answer
+  // Pattern 1: (a * b) + c  or  (a * b) - c
+  for (let t = 0; t < 10; t++) {
+    const c = randInt(1, 8);
+    const inner = randInt(0, 1) === 0 ? answer - c : answer + c;
+    const outerOp = inner === answer - c ? '+' : '-';
+    if (inner < 2) continue;
+    // Try to factor inner as multiplication
+    const factors = [];
+    for (let i = 2; i <= 12; i++) {
+      if (inner % i === 0 && inner / i >= 2 && inner / i <= 12) {
+        factors.push([i, inner / i]);
+      }
+    }
     if (factors.length > 0) {
-      const [fa, fb] = factors[randInt(0, factors.length - 1)];
-      expr = `${fa}*${fb}`;
-      display = `${fa}×${fb}`;
-    } else {
-      // fallback to addition
-      a = randInt(0, answer);
-      b = answer - a;
-      expr = `${a}+${b}`;
-      display = `${a}+${b}`;
+      const [a, b] = factors[randInt(0, factors.length - 1)];
+      const outerDisp = outerOp === '+' ? '+' : '−';
+      return {
+        expression: `(${a}*${b})${outerOp}${c}`,
+        display: `(${a}×${b})${outerDisp}${c}`,
+        answer
+      };
     }
   }
-  return { expression: expr, display, answer };
+  // Pattern 2: (a / b) + c  or  (a / b) - c
+  for (let t = 0; t < 10; t++) {
+    const c = randInt(1, 8);
+    const inner = randInt(0, 1) === 0 ? answer - c : answer + c;
+    const outerOp = inner === answer - c ? '+' : '-';
+    if (inner < 1 || inner > 12) continue;
+    // a / b = inner → a = inner * b
+    const b = randInt(2, 9);
+    const a = inner * b;
+    if (a > 144 || a < 2) continue;
+    const outerDisp = outerOp === '+' ? '+' : '−';
+    return {
+      expression: `(${a}/${b})${outerOp}${c}`,
+      display: `(${a}/${b})${outerDisp}${c}`,
+      answer
+    };
+  }
+  return null;
+}
+
+// --- Hard: must include ^ or √, 2-3 operands ---
+function generateHardExpression(answer) {
+  // Try √ and ^ patterns, shuffled
+  const strategies = shuffle([trySquareRoot, tryExponent]);
+  for (const strategy of strategies) {
+    const result = strategy(answer);
+    if (result) return result;
+  }
+  // Fallback to medium if no ^ or √ pattern works
+  return generateMediumExpression(answer);
+}
+
+function trySquareRoot(answer) {
+  // Perfect squares we can use: 1,4,9,16,25,36,49,64,81,100,121,144
+  const squares = [1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144];
+  const roots =   [1, 2, 3,  4,  5,  6,  7,  8,  9,  10,  11,  12];
+
+  // Pattern: √n + c = answer  or  √n - c = answer  or  √n * c = answer
+  const attempts = [];
+  for (let i = 0; i < squares.length; i++) {
+    const rootVal = roots[i];
+    const sq = squares[i];
+    // √sq + c = answer → c = answer - rootVal
+    const cAdd = answer - rootVal;
+    if (cAdd >= 0 && cAdd <= 24) {
+      if (cAdd === 0) {
+        attempts.push({ expression: `sqrt(${sq})`, display: `√${sq}`, answer });
+      } else {
+        attempts.push({ expression: `sqrt(${sq})+${cAdd}`, display: `√${sq}+${cAdd}`, answer });
+      }
+    }
+    // √sq - c = answer → c = rootVal - answer
+    const cSub = rootVal - answer;
+    if (cSub > 0 && cSub <= 12) {
+      attempts.push({ expression: `sqrt(${sq})-${cSub}`, display: `√${sq}−${cSub}`, answer });
+    }
+    // √sq * c = answer → c = answer / rootVal
+    if (rootVal >= 2 && answer % rootVal === 0) {
+      const cMul = answer / rootVal;
+      if (cMul >= 2 && cMul <= 12) {
+        attempts.push({ expression: `sqrt(${sq})*${cMul}`, display: `√${sq}×${cMul}`, answer });
+      }
+    }
+  }
+  if (attempts.length === 0) return null;
+  return attempts[randInt(0, attempts.length - 1)];
+}
+
+function tryExponent(answer) {
+  // Small bases and exponents: 2^2=4, 2^3=8, 2^4=16, 3^2=9, 3^3=27, 4^2=16, 5^2=25, etc.
+  const powers = [
+    { base: 2, exp: 2, val: 4 },
+    { base: 2, exp: 3, val: 8 },
+    { base: 2, exp: 4, val: 16 },
+    { base: 3, exp: 2, val: 9 },
+    { base: 3, exp: 3, val: 27 },
+    { base: 4, exp: 2, val: 16 },
+    { base: 5, exp: 2, val: 25 },
+    { base: 6, exp: 2, val: 36 },
+    { base: 7, exp: 2, val: 49 },
+    { base: 8, exp: 2, val: 64 },
+    { base: 9, exp: 2, val: 81 },
+    { base: 10, exp: 2, val: 100 },
+    { base: 11, exp: 2, val: 121 },
+    { base: 12, exp: 2, val: 144 },
+  ];
+
+  const attempts = [];
+  for (const p of powers) {
+    // b^e + c = answer → c = answer - val
+    const cAdd = answer - p.val;
+    if (cAdd === 0) {
+      attempts.push({ expression: `${p.base}^${p.exp}`, display: `${p.base}^${p.exp}`, answer });
+    } else if (cAdd > 0 && cAdd <= 12) {
+      attempts.push({ expression: `(${p.base}^${p.exp})+${cAdd}`, display: `(${p.base}^${p.exp})+${cAdd}`, answer });
+    }
+    // b^e - c = answer → c = val - answer
+    const cSub = p.val - answer;
+    if (cSub > 0 && cSub <= 12) {
+      attempts.push({ expression: `(${p.base}^${p.exp})-${cSub}`, display: `(${p.base}^${p.exp})−${cSub}`, answer });
+    }
+    // b^e / c = answer → c = val / answer
+    if (answer >= 2 && p.val % answer === 0) {
+      const cDiv = p.val / answer;
+      if (cDiv >= 2 && cDiv <= 12) {
+        attempts.push({ expression: `(${p.base}^${p.exp})/${cDiv}`, display: `(${p.base}^${p.exp})/${cDiv}`, answer });
+      }
+    }
+  }
+  if (attempts.length === 0) return null;
+  return attempts[randInt(0, attempts.length - 1)];
 }
 
 function buildContiguousGroup(pieceCells, rows, cols, size) {
@@ -224,7 +415,7 @@ function tryGenerate(difficulty, puzzleId, rows, cols, minP, maxP, minC, maxC, m
 
     pieceSums.add(answer); // prevent future pieces/monsters from reusing
 
-    const { expression, display } = generateExpression(answer);
+    const { expression, display } = generateExpression(answer, difficulty);
     monsterCells.push({
       cell: monsterCellNames[i],
       expression,
