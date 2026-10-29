@@ -3,7 +3,7 @@ import { PuzzleModel, DIFFICULTY_GRIDS, DIFFICULTY_INFO } from './puzzle-model.j
 import { GridRenderer } from './grid.js';
 import { TabsUI } from './tabs.js';
 import { validate, prove } from './validation.js';
-import { computeRotation, parseCellList } from './cell-utils.js';
+import { solutionEntry, parseCellList } from './cell-utils.js';
 import { generatePuzzle, generateBatch } from './generator.js';
 import { PuzzlePlayer } from './player.js';
 
@@ -139,8 +139,9 @@ document.addEventListener('DOMContentLoaded', () => {
       })),
       solution: model.solution.map(s => {
         const piece = pieceMap[s.pieceId];
-        const rot = piece ? computeRotation(s.cell1, s.cell2, s.val1, s.val2, piece.left, piece.right) : 0;
-        return { piece: s.pieceId, cells: [s.cell1, s.cell2], rotation: rot };
+        return piece
+          ? solutionEntry(s.pieceId, s.cell1, s.cell2, s.val1, s.val2, piece.left, piece.right)
+          : { piece: s.pieceId, cells: [s.cell1, s.cell2], rotation: 0 };
       }),
       monster_solution: model.monsterSolution.filter(ms => ms.monsterCell).map(ms => ({
         monster_cell: ms.monsterCell, piece: ms.pieceId
@@ -188,8 +189,9 @@ document.addEventListener('DOMContentLoaded', () => {
       })),
       solution: model.solution.map(s => {
         const piece = pieceMap[s.pieceId];
-        const rot = piece ? computeRotation(s.cell1, s.cell2, s.val1, s.val2, piece.left, piece.right) : 0;
-        return { piece: s.pieceId, cells: [s.cell1, s.cell2], rotation: rot };
+        return piece
+          ? solutionEntry(s.pieceId, s.cell1, s.cell2, s.val1, s.val2, piece.left, piece.right)
+          : { piece: s.pieceId, cells: [s.cell1, s.cell2], rotation: 0 };
       }),
       monster_solution: model.monsterSolution.filter(ms => ms.monsterCell).map(ms => ({
         monster_cell: ms.monsterCell, piece: ms.pieceId

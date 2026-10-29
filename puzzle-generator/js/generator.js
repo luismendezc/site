@@ -1,6 +1,6 @@
 // Random puzzle generator
 import { DIFFICULTY_LIMITS, DIFFICULTY_GRIDS } from './puzzle-model.js';
-import { cellName, parseCell, areCellsAdjacent, computeRotation, parseCellList } from './cell-utils.js';
+import { cellName, parseCell, areCellsAdjacent, solutionEntry, parseCellList } from './cell-utils.js';
 import { validate, prove } from './validation.js';
 
 function randInt(min, max) {
@@ -387,8 +387,7 @@ function tryGenerate(difficulty, puzzleId, rows, cols, minP, maxP, minC, maxC, m
     cellValues[cell1] = left;
     cellValues[cell2] = right;
 
-    const rot = computeRotation(cell1, cell2, left, right, left, right);
-    solution.push({ piece: id, cells: [cell1, cell2], rotation: rot });
+    solution.push(solutionEntry(id, cell1, cell2, left, right, left, right));
   }
 
   // Track all piece sums for ambiguity avoidance

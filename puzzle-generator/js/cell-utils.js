@@ -71,6 +71,19 @@ export function computeRotation(c1, c2, v1, v2, pieceLeft, pieceRight) {
   }
 }
 
+// Solution entry with the top (vertical) / left (horizontal) cell first and the
+// matching rotation. The game reads cells in value order (rotation 0/1 put the
+// piece's left value in cells[0]) and its Reveal animation needs cells[0] to be
+// the top/left cell, so always export solutions through this.
+export function solutionEntry(pieceId, c1, c2, v1, v2, pieceLeft, pieceRight) {
+  const [col1, row1] = parseCell(c1);
+  const [col2, row2] = parseCell(c2);
+  if ((row1 === row2 && col1 > col2) || (row1 !== row2 && row1 > row2)) {
+    [c1, c2, v1, v2] = [c2, c1, v2, v1];
+  }
+  return { piece: pieceId, cells: [c1, c2], rotation: computeRotation(c1, c2, v1, v2, pieceLeft, pieceRight) };
+}
+
 export function areCellsAdjacent(c1, c2) {
   const [col1, row1] = parseCell(c1);
   const [col2, row2] = parseCell(c2);
